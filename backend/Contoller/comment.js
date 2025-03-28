@@ -1,4 +1,4 @@
-const { Post, Comment } = require("../models/blogModels");
+const { Post, Comment } = require("../Models/blogModels");
 
 exports.commenthand = async (req, res) => {
     try {

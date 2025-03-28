@@ -1,4 +1,4 @@
-const { Post } = require("../models/blogModels");
+const { Post } = require("../Models/blogModels");
 
 exports.getComments = async (req, res) => {
     try {

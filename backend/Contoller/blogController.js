@@ -1,4 +1,4 @@
-const { Post, Comment, Like } = require("../models/blogModels");
+const { Post, Comment, Like } = require("../Models/blogModels");
 
 // Get all posts
 const getPosts = async (req, res) => {

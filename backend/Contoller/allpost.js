@@ -1,4 +1,4 @@
-const {Post}= require('../models/blogModels');        
+const {Post}= require('../Models/blogModels');        
 exports.allpostdata = async (req, res) => {
     try{
         const allpostdata = await Post.find().sort({createdAt:-1});

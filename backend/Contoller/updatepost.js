@@ -1,4 +1,4 @@
-const {Post} = require('../models/blogModels');
+const {Post} = require('../Models/blogModels');
 exports.updatepost = async (req, res) => {
     try{
         const {id} = req.params;

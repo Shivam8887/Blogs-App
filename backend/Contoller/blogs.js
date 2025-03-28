@@ -5,7 +5,7 @@ exports.blogs = async (req, res) => {
     try {
         const { name, email } = req.user;
         
-        return res.status(200).json({ name, email ,message:"Email and name are Received."}); // Fixed: Proper JSON structure
+        return res.status(200).json({ name, email ,message:"Email and name are Received."}); 
     } catch (err) {
         console.error("Error in data sending:", err);
         return res.status(500).json({ message: "Internal Server Error." });
