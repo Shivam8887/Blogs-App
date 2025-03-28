@@ -1,3 +1,76 @@
-/node_modeules/
-.vscode/   
+console.clear();
+const express = require('express');
+const multer = require('multer');
+const cloudinary = require('cloudinary').v2;
+require('dotenv').config();
+const fs = require('fs');
+const app = express();
+const port = 3000;
 
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, '/uploads/')
+    },
+    filename: function (req, file, cb) {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+      cb(null, file.fieldname + '-' + uniqueSuffix)
+    }
+  })
+  
+// Multer configuration
+const upload = multer({ storage: storage });
+
+// Cloudinary configuration
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.API_KEY,
+    api_secret: process.env.API_SECRET
+});
+
+// POST route for file upload
+app.post('/upload', upload.single('avatar'), (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ Message: 'No file provided!' });
+    }
+
+console.log("Req File -> ",req.file);
+    const filePath = req.file.path;
+
+    console.log("File Path -> ",filePath);
+
+    cloudinary.uploader.upload(
+        req.file.path, 
+        { folder: 'example_folder' },
+        (error, result) => {
+            if (error) {
+                console.error('Error uploading to Cloudinary:', error);
+                return res.status(500).json({ Message: 'Error uploading to Cloudinary' });
+            }
+    
+            console.log('File successfully uploaded to Cloudinary:', result);
+    
+            // Delete the local file
+            fs.unlink(req.file.path, (err) => {
+                if (err) {
+                    console.error('Error deleting local file:', err);
+                } else {
+                    console.log('Local file deleted successfully.');
+                }
+            });
+    
+            return res.status(201).json({ Message: 'File uploaded successfully!', result });
+        }
+    );
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err);
+    if (err instanceof multer.MulterError) {
+        return res.status(400).json({ Message: `Multer error: ${err.message}` });
+    }
+    return res.status(500).json({ Message: 'Internal Server Error!' });
+});
+
+// Start server
+app.listen(port, () => console.log(`App listening on port ${port}!`));
